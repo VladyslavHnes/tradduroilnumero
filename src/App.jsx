@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 const numberToItalian = {
@@ -23,8 +23,8 @@ function App() {
   const [feedback, setFeedback] = useState("");
   const [voice, setVoice] = useState(null);
 
-  const correctSound = new Audio("/correct.mp3");
-  const incorrectSound = new Audio("/incorrect.mp3");
+  const correctSoundRef = useRef(new Audio("/correct.mp3"));
+  const incorrectSoundRef = useRef(new Audio("/incorrect.mp3"));
 
   useEffect(() => {
     const loadVoices = () => {
@@ -59,20 +59,20 @@ function App() {
   const checkAnswer = () => {
     const correct = getItalianNumber(number);
 
-    correctSound.pause();
-    correctSound.currentTime = 0;
-    incorrectSound.pause();
-    incorrectSound.currentTime = 0;
+    correctSoundRef.current.pause();
+    correctSoundRef.current.currentTime = 0;
+    incorrectSoundRef.current.pause();
+    incorrectSoundRef.current.currentTime = 0;
 
     if (input.trim().toLowerCase() === correct) {
-      correctSound.play();
+      correctSoundRef.current.play();
       setFeedback("✅ Corretto!");
       speak(correct);
       setTimeout(() => {
         generateNumber();
       }, 1500);
     } else {
-      incorrectSound.play();
+      incorrectSoundRef.current.play();
       setFeedback(`❌ Sbagliato. Corretto: "${correct}"`);
     }
   };
