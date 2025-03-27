@@ -22,3 +22,31 @@ button:hover {
   filter: brightness(0.95);
 }
 
+.bauhaus-shape {
+  position: absolute;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #ff595e;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 90px solid transparent;
+  border-right: 90px solid transparent;
+  border-bottom: 160px solid #1982c4;
+}
+
+.square {
+  width: 120px;
+  height: 120px;
+  background-color: #6a4c93;
+}
+
+

@@ -93,10 +93,12 @@ function App() {
     >
       <div
         style={{
+          position: "relative",
           textAlign: "center",
           padding: 40,
           maxWidth: "600px",
-          width: "100%"
+          width: "100%",
+          zIndex: 1 
         }}
       >
         <h1 style={{ color: "#d62828", fontSize: "2.8rem", marginBottom: 10 }}>
@@ -158,6 +160,10 @@ function App() {
               Nuovo numero
             </button>
           </div>
+
+          <div className="bauhaus-shape circle" style={{ top: -60, left: -60 }} />
+          <div className="bauhaus-shape triangle" style={{ bottom: -80, right: -60 }} />
+          <div className="bauhaus-shape square" style={{ top: 50, right: -80 }} />
         </form>
 
         <p
