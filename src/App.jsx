@@ -27,7 +27,6 @@ function App() {
   const incorrectSound = new Audio("/incorrect.mp3");
 
   useEffect(() => {
-    // Load Italian voice
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
       const italianVoice = voices.find(v => v.lang.startsWith("it"));
@@ -68,54 +67,109 @@ function App() {
     if (input.trim().toLowerCase() === correct) {
       correctSound.play();
       setFeedback("✅ Corretto!");
-      speak(getItalianNumber(number)); // Speak the number after correct answer
+      speak(correct);
       setTimeout(() => {
         generateNumber();
-      }, 1500); // wait a bit before generating the new number
+      }, 1500);
     } else {
       incorrectSound.play();
       setFeedback(`❌ Sbagliato. Corretto: "${correct}"`);
     }
   };
 
-  return (
-    <div style={{ padding: 40, fontFamily: "Arial", textAlign: "center" }}>
-      <h1>Tradurro il numero</h1>
-      <h2 style={{ fontSize: "3rem" }}>{number}</h2>
+  const isCorrect = feedback.includes("Corretto!");
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          checkAnswer();
+  return (
+    <div
+      style={{
+        fontFamily: "Poppins, sans-serif",
+        backgroundColor: "#fef6e4",
+        color: "#111",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <div
+        style={{
+          textAlign: "center",
+          padding: 40,
+          maxWidth: "600px",
+          width: "100%"
         }}
       >
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Scrivi in italiano"
-          style={{
-            fontSize: "1.5rem",
-            padding: "10px 20px",
-            width: "300px",
-            borderRadius: "8px",
-            border: "1px solid #ccc"
-          }}
-        />
-        <div style={{ marginTop: 10 }}>
-          <button type="submit" style={{ fontSize: "1rem", padding: "10px 15px" }}>
-            Verifica
-          </button>
-          <button
-            type="button"
-            onClick={generateNumber}
-            style={{ fontSize: "1rem", padding: "10px 15px", marginLeft: 10 }}
-          >
-            Nuovo numero
-          </button>
-        </div>
-      </form>
+        <h1 style={{ color: "#d62828", fontSize: "2.8rem", marginBottom: 10 }}>
+          Tradurro il numero
+        </h1>
+        <h2 style={{ fontSize: "4rem", color: "#001858", margin: "20px 0" }}>
+          {number}
+        </h2>
 
-      <p style={{ marginTop: 20, fontSize: "1.2rem" }}>{feedback}</p>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            checkAnswer();
+          }}
+          style={{ marginBottom: 20 }}
+        >
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Scrivi in italiano"
+            style={{
+              fontSize: "1.5rem",
+              padding: "12px 24px",
+              width: "100%",
+              maxWidth: "320px",
+              borderRadius: "12px",
+              border: "2px solid #333",
+              backgroundColor: "#ffffff",
+              color: "#111"
+            }}
+          />
+          <div style={{ marginTop: 20 }}>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: "#f3d2c1",
+                color: "#111",
+                fontSize: "1.1rem",
+                padding: "12px 20px",
+                borderRadius: "10px",
+                marginRight: 10,
+                border: "none"
+              }}
+            >
+              Verifica
+            </button>
+            <button
+              type="button"
+              onClick={generateNumber}
+              style={{
+                backgroundColor: "#8bd3dd",
+                color: "#111",
+                fontSize: "1.1rem",
+                padding: "12px 20px",
+                borderRadius: "10px",
+                border: "none"
+              }}
+            >
+              Nuovo numero
+            </button>
+          </div>
+        </form>
+
+        <p
+          style={{
+            fontSize: "1.3rem",
+            marginTop: 10,
+            color: isCorrect ? "#30c16a" : feedback ? "#ef476f" : "#111"
+          }}
+        >
+          {feedback}
+        </p>
+      </div>
     </div>
   );
 }
