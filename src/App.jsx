@@ -21,24 +21,45 @@ function App() {
   const [number, setNumber] = useState(0);
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [voice, setVoice] = useState(null);
 
   const correctSound = new Audio("/correct.mp3");
   const incorrectSound = new Audio("/incorrect.mp3");
 
+  useEffect(() => {
+    // Load Italian voice
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const italianVoice = voices.find(v => v.lang.startsWith("it"));
+      if (italianVoice) setVoice(italianVoice);
+    };
+
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    generateNumber();
+  }, []);
+
+  const speak = (text) => {
+    if (!voice) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.voice = voice;
+    utter.lang = "it-IT";
+    window.speechSynthesis.speak(utter);
+  };
+
   const generateNumber = () => {
-    setNumber(Math.floor(Math.random() * 100) + 1);
+    const newNumber = Math.floor(Math.random() * 100) + 1;
+    setNumber(newNumber);
     setInput("");
     setFeedback("");
   };
 
-  useEffect(() => {
-    generateNumber();
-  }, []);
-
   const checkAnswer = () => {
     const correct = getItalianNumber(number);
 
-    // Reset both sounds in case they're currently playing
     correctSound.pause();
     correctSound.currentTime = 0;
     incorrectSound.pause();
@@ -46,19 +67,20 @@ function App() {
 
     if (input.trim().toLowerCase() === correct) {
       correctSound.play();
-      setFeedback("✅ Correct!");
+      setFeedback("✅ Corretto!");
+      speak(getItalianNumber(number)); // Speak the number after correct answer
       setTimeout(() => {
         generateNumber();
-      }, 2000);
+      }, 1500); // wait a bit before generating the new number
     } else {
       incorrectSound.play();
-      setFeedback(`❌ Wrong. Correct: "${correct}"`);
+      setFeedback(`❌ Sbagliato. Corretto: "${correct}"`);
     }
   };
 
   return (
     <div style={{ padding: 40, fontFamily: "Arial", textAlign: "center" }}>
-      <h1>Translate the Number</h1>
+      <h1>Tradurro il numero</h1>
       <h2 style={{ fontSize: "3rem" }}>{number}</h2>
 
       <form
@@ -70,7 +92,7 @@ function App() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type in Italian"
+          placeholder="Scrivi in italiano"
           style={{
             fontSize: "1.5rem",
             padding: "10px 20px",
@@ -81,14 +103,14 @@ function App() {
         />
         <div style={{ marginTop: 10 }}>
           <button type="submit" style={{ fontSize: "1rem", padding: "10px 15px" }}>
-            Check
+            Verifica
           </button>
           <button
             type="button"
             onClick={generateNumber}
             style={{ fontSize: "1rem", padding: "10px 15px", marginLeft: 10 }}
           >
-            New Number
+            Nuovo numero
           </button>
         </div>
       </form>
